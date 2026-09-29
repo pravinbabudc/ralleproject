@@ -25,7 +25,7 @@ def get_experiment_results():
         return [res]
     
     try:
-        df = pd.read_csv(results_file)
+        df = pd.read_csv(results_file, on_bad_lines="skip")
         return df.to_dict(orient="records")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to read experiment results: {str(e)}")

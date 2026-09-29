@@ -68,6 +68,8 @@ def create_flow(
         packets=flow_in.packets,
         latency_ms=flow_in.latency_ms,
         packet_loss_pct=flow_in.packet_loss_pct,
+        jitter_ms=getattr(flow_in, "jitter_ms", 1.0) or 1.0,
+        burst_factor=getattr(flow_in, "burst_factor", 1.0) or 1.0,
         link_id=flow_in.link_id,
         link_capacity_mbps=flow_in.link_capacity_mbps,
         link_utilisation_pct=link_util,

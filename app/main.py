@@ -140,7 +140,22 @@ def seed_database():
     finally:
         db.close()
 
+def run_migrations():
+    """Ensure newly introduced columns exist in SQLite database without requiring external tools."""
+    from sqlalchemy import inspect, text
+    with engine.connect() as conn:
+        insp = inspect(conn)
+        existing_tables = insp.get_table_names()
+        if "flow_records" in existing_tables:
+            cols = [c["name"] for c in insp.get_columns("flow_records")]
+            if "jitter_ms" not in cols:
+                conn.execute(text("ALTER TABLE flow_records ADD COLUMN jitter_ms FLOAT DEFAULT 1.0"))
+            if "burst_factor" not in cols:
+                conn.execute(text("ALTER TABLE flow_records ADD COLUMN burst_factor FLOAT DEFAULT 1.0"))
+            conn.commit()
+
 @app.on_event("startup")
 def startup_event():
     Base.metadata.create_all(bind=engine)
+    run_migrations()
     seed_database()

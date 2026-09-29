@@ -13,6 +13,24 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+def run_migrations():
+    from sqlalchemy import inspect, text
+    try:
+        with engine.connect() as conn:
+            insp = inspect(conn)
+            tables = insp.get_table_names()
+            if "flow_records" in tables:
+                cols = [c["name"] for c in insp.get_columns("flow_records")]
+                if "jitter_ms" not in cols:
+                    conn.execute(text("ALTER TABLE flow_records ADD COLUMN jitter_ms FLOAT DEFAULT 1.0"))
+                if "burst_factor" not in cols:
+                    conn.execute(text("ALTER TABLE flow_records ADD COLUMN burst_factor FLOAT DEFAULT 1.0"))
+                conn.commit()
+    except Exception:
+        pass
+
+run_migrations()
+
 def get_db():
     db = SessionLocal()
     try:

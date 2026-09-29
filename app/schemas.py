@@ -107,6 +107,8 @@ class FlowRecordBase(BaseModel):
     packets: int = 0
     latency_ms: float = 10.0
     packet_loss_pct: float = 0.0
+    jitter_ms: float = 1.0
+    burst_factor: float = 1.0
     link_id: str
     link_capacity_mbps: float = 100.0
     link_utilisation_pct: Optional[float] = None

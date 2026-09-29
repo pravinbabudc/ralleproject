@@ -66,6 +66,8 @@ class FlowRecord(Base):
     packets = Column(Integer, default=0)
     latency_ms = Column(Float, default=10.0)
     packet_loss_pct = Column(Float, default=0.0)
+    jitter_ms = Column(Float, default=1.0)
+    burst_factor = Column(Float, default=1.0)
     link_id = Column(String, ForeignKey("links.id"), nullable=False)
     link_capacity_mbps = Column(Float, default=100.0)
     link_utilisation_pct = Column(Float, default=50.0)
